@@ -63,8 +63,10 @@ def k_means(init_centers: list, list_of_data: list)->list:
 		if new_centers == centers:
 			break
 		centers = [centre for centre in new_centers]
-	print(centers)
-	print(it)
+	print("The centers are:")
+	for centre in centers:
+		print(centre)
+	print("Total number of iteration: ", it)
 	clusters = get_curr_cluster(centers, list_of_data)
 	return clusters
 

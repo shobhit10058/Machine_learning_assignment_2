@@ -64,15 +64,13 @@ def get_centers(clusters: list)->list:
 		centers.append(get_center(cluster))
 	return centers
 
-def verify_length(list_of_data):
-	for data in list_of_data:
-		assert(len(data) == 9)
-
-def k_means(init_centers: list, list_of_data: list)->list:
+# give the optional value of tolerance if 
+# convergence is taking too much time, by
+# default it is zero
+def k_means(init_centers: list, list_of_data: list, tol = 0)->list:
 	k = len(init_centers)
 	centers = [centre for centre in init_centers]
 	it = 0
-	tol = 0.00001
 	while True:
 		it += 1
 		clusters = get_curr_cluster(centers, list_of_data)
@@ -102,5 +100,4 @@ normalize_data(list_of_data)
 k = 50
 
 init_centers = random_centers(k, list_of_data)
-verify_length(list_of_data)
 clusters = k_means(init_centers, list_of_data)

@@ -15,14 +15,15 @@ def read_csv(file: str)->tuple:
 # returns the index of closest center
 def closest_centre(centers: list, data: list)->int:
 	closest_ind = -1
-	min_dis_sq = 0
+	min_dis_sq = -1
 	for ind in range(len(centers)):
 		center = centers[ind]
 		curr_dis_sq = 0
 		for attr_ind in range(len(center)):
 				curr_dis_sq += ((data[attr_ind] - center[attr_ind])**2)
-		if curr_dis_sq <= min_dis_sq:
+		if min_dis_sq == -1 or curr_dis_sq <= min_dis_sq:
 			closest_ind = ind
+			min_dis_sq = curr_dis_sq
 	return closest_ind
 
 def get_curr_cluster(centers: list, list_of_data: list)->list:

@@ -97,7 +97,7 @@ def random_centers(k, list_of_data):
 		init_centers[ind].pop()
 	return init_centers
 
-attributes, list_of_data = read_csv('diabetes.csv')
+attributes, list_of_data = read_csv('mean_data.csv')
 normalize_data(list_of_data)
 k = 50
 

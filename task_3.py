@@ -1,5 +1,5 @@
 import k_means
-import sklearn.metrics
+from sklearn import metrics
 import matplotlib.pyplot as plt
 
 attributes, list_of_data = k_means.read_csv('mean_data.csv')
@@ -17,10 +17,10 @@ for k in range(2, 100):
 			X.append(data[:-1])
 			y_label.append(int(data[-1]))
 
-	y_pred = k_means.get_predictions(clusters)
+	y_pred = k_means.get_predictions_for_clusters(clusters)
 
 	# metrics without ground truth
-	vals.append(sklearn.metrics.calinski_harabasz_score(X, y_pred))
+	vals.append(metrics.silhouette_score(X, y_pred))
 	
 
 plt.plot(vals)

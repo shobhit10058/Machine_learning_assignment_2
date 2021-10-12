@@ -100,14 +100,23 @@ def get_pred_for_cluster(cluster: list):
 	lab_counts = {0: 0, 1: 0}
 	for curr_data in cluster:
 		lab_counts[int(curr_data[-1])] += 1
-	if lab_counts[0] < lab_counts[1]:
+	if lab_counts[0] > lab_counts[1]:
 		return 0
 	return 1
 
-def get_predictions(clusters: list):
+def get_predictions_for_clusters(clusters: list):
 	y_pred = []
 	for cluster in clusters:
 		pred = get_pred_for_cluster(cluster)
 		ps_siz = len(cluster)
 		y_pred.extend([pred for _ in range(ps_siz)])
+	return y_pred
+
+def get_predictions_for_test(test_data: list, clusters: list):
+	y_pred = []
+	centers = get_centers(clusters)
+	predictions_for_clusters = [get_pred_for_cluster(clusters[i]) for i in range(len(clusters))]
+	for data in test_data:
+		clust_ind = closest_centre(centers, data)
+		y_pred.append(predictions_for_clusters[clust_ind])
 	return y_pred

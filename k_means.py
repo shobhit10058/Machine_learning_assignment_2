@@ -1,6 +1,4 @@
 import random
-import sklearn.metrics
-import matplotlib.pyplot as plt
 
 def read_csv(file: str)->tuple:
 	list_of_data = []
@@ -115,16 +113,3 @@ def get_predictions(clusters: list):
 			y_pred.append(pred)
 			y_label.append(int(curr_data[-1]))
 	return y_label, y_pred
-
-attributes, list_of_data = read_csv('mean_data.csv')
-normalize_data(list_of_data)
-vals = []
-for k in range(1, 200):
-	print(k)
-	init_centers = random_centers(k, list_of_data)
-	clusters = k_means(init_centers, list_of_data)
-	y_label, y_pred = get_predictions(clusters)
-	vals.append(sklearn.metrics.homogeneity_score(y_label, y_pred))
-
-plt.plot(vals)
-plt.show()

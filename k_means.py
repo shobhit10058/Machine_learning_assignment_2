@@ -1,4 +1,6 @@
 import random
+import sklearn.metrics
+import matplotlib.pyplot as plt
 
 def read_csv(file: str)->tuple:
 	list_of_data = []
@@ -64,6 +66,13 @@ def get_centers(clusters: list)->list:
 		centers.append(get_center(cluster))
 	return centers
 
+def random_centers(k, list_of_data):
+	init_centers = random.sample(list_of_data, k)
+	for ind in range(k):
+		init_centers[ind] = list(init_centers[ind])
+		init_centers[ind].pop()
+	return init_centers
+
 # give the optional value of tolerance if 
 # convergence is taking too much time, by
 # default it is zero
@@ -81,23 +90,41 @@ def k_means(init_centers: list, list_of_data: list, tol = 0)->list:
 		if mx_dist <= tol:
 			break
 		centers = [centre for centre in new_centers]
-	print("The centers are:")
-	for centre in centers:
-		print(centre)
-	print("Total number of iteration: ", it)
+	# print("The centers are:")
+	# for centre in centers:
+	# 	print(centre)
+	# print("Total number of iteration: ", it)
 	clusters = get_curr_cluster(centers, list_of_data)
 	return clusters
 
-def random_centers(k, list_of_data):
-	init_centers = random.sample(list_of_data, k)
-	for ind in range(k):
-		init_centers[ind] = list(init_centers[ind])
-		init_centers[ind].pop()
-	return init_centers
+def get_pred_for_cluster(cluster: list):
+	pred = 0
+	lab_counts = {0: 0, 1: 0}
+	for curr_data in cluster:
+		lab_counts[int(curr_data[-1])] += 1
+	if lab_counts[0] < lab_counts[1]:
+		return 0
+	return 1
+
+def get_predictions(clusters: list):
+	y_pred = []
+	y_label = []
+	for cluster in clusters:
+		pred = get_pred_for_cluster(cluster)
+		for curr_data in cluster:
+			y_pred.append(pred)
+			y_label.append(int(curr_data[-1]))
+	return y_label, y_pred
 
 attributes, list_of_data = read_csv('mean_data.csv')
 normalize_data(list_of_data)
-k = 50
+vals = []
+for k in range(1, 200):
+	print(k)
+	init_centers = random_centers(k, list_of_data)
+	clusters = k_means(init_centers, list_of_data)
+	y_label, y_pred = get_predictions(clusters)
+	vals.append(sklearn.metrics.silhouette_score(y_label, y_pred))
 
-init_centers = random_centers(k, list_of_data)
-clusters = k_means(init_centers, list_of_data)
+plt.plot(vals)
+plt.show()

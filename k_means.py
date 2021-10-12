@@ -106,10 +106,8 @@ def get_pred_for_cluster(cluster: list):
 
 def get_predictions(clusters: list):
 	y_pred = []
-	y_label = []
 	for cluster in clusters:
 		pred = get_pred_for_cluster(cluster)
-		for curr_data in cluster:
-			y_pred.append(pred)
-			y_label.append(int(curr_data[-1]))
-	return y_label, y_pred
+		ps_siz = len(cluster)
+		y_pred.extend([pred for _ in range(ps_siz)])
+	return y_pred

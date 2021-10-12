@@ -23,3 +23,4 @@ print(sklearn.metrics.adjusted_rand_score(y_label, y_pred))
 
 # metrics without ground truth
 print(sklearn.metrics.silhouette_score(X, y_pred))
+print(sklearn.metrics.calinski_harabasz_score(X, y_pred))

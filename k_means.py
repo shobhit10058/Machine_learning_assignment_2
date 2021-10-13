@@ -77,7 +77,7 @@ def random_centers(k, list_of_data):
 # give the optional value of tolerance if 
 # convergence is taking too much time, by
 # default it is zero
-def k_means(init_centers: list, list_of_data: list, tol = 0)->list:
+def k_means(init_centers: list, list_of_data: list, tol = 0, get_stats=0)->list:
 	k = len(init_centers)
 	centers = [centre for centre in init_centers]
 	it = 0
@@ -88,10 +88,14 @@ def k_means(init_centers: list, list_of_data: list, tol = 0)->list:
 		mx_dist = 0
 		for ind in range(len(centers)):
 			mx_dist = max(mx_dist, get_dist(new_centers[ind], centers[ind]))
+		if(get_stats):
+			print("Iteration %d done" %it)
 		if mx_dist <= tol:
 			break
 		centers = [centre for centre in new_centers]
 	clusters = get_curr_cluster(centers, list_of_data)
+	if(get_stats):
+		print("The number of iterations required for convergence:", it)
 	return clusters
 
 def get_pred_for_cluster(cluster: list):

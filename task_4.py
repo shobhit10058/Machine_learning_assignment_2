@@ -7,7 +7,7 @@ attributes, list_of_data = k_means.read_csv('mean_data.csv')
 k_means.normalize_data(list_of_data)
 
 # get the value from part iii)
-k = 50
+k = 10
 
 def evaluate_k_means_with_k_centers(full_data, centers_ind)->dict:
 	indices = []
@@ -60,15 +60,15 @@ def random_k_centers(k, full_data):
 	
 	import matplotlib.pyplot as plt
 	figure, ax = plt.subplots()
-	
-	for i in range(3):
-		ax.plot(metrics[i])
+	colors = ['blue', 'red', 'green']
 
+	for i in range(3):
+		ax.plot(metrics[i], color=colors[i])
 	plt.show()
 
 random_k_centers(k, list_of_data)
 
-		
+
 
 
 

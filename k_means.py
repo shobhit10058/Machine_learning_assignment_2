@@ -15,11 +15,14 @@ def read_csv(file: str)->tuple:
 def normalize_data(list_of_data: list):
 	data_size = len(list_of_data)
 	for attr_ind in range(len(list_of_data[0])):
-		mx_val = 0
+		max_val = 0
+		min_val = list_of_data[0][attr_ind]
 		for row in range(data_size):
-			mx_val = max(mx_val, list_of_data[row][attr_ind])
+			max_val = max(list_of_data[row][attr_ind], max_val)
+			min_val = min(list_of_data[row][attr_ind], min_val)
+
 		for row in range(data_size):
-			list_of_data[row][attr_ind] /= mx_val
+			list_of_data[row][attr_ind] /= (max_val - min_val)
 
 def get_dist(point_1: list, point_2: list) -> float:
 	curr_dis = 0
@@ -88,10 +91,6 @@ def k_means(init_centers: list, list_of_data: list, tol = 0)->list:
 		if mx_dist <= tol:
 			break
 		centers = [centre for centre in new_centers]
-	# print("The centers are:")
-	# for centre in centers:
-	# 	print(centre)
-	# print("Total number of iteration: ", it)
 	clusters = get_curr_cluster(centers, list_of_data)
 	return clusters
 

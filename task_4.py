@@ -1,6 +1,3 @@
-from numpy.core.numeric import full
-from scipy.sparse import data
-from scipy.sparse.construct import rand
 import k_means, random
 from sklearn import metrics
 
@@ -9,6 +6,17 @@ k_means.normalize_data(list_of_data)
 
 # get the value from part iii)
 k = 50
+
+def get_variance(data: list):
+	mean_data = 0
+	mean_data2 = 0
+	for val in data:
+		mean_data += val
+		mean_data2 += val**2
+	mean_data2 /= len(data)
+	mean_data /= len(data)
+	var_data = mean_data2 - mean_data**2
+	return var_data
 
 def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 	indices = []
@@ -63,8 +71,11 @@ def evaluate_init(k: int, full_data: list, method, method_name)->None:
 
 	for i in range(3):
 		ax.plot(metrics[i], color=colors[i])
+	print("\nWith", method + ", the variance of metrics were:")
+	print("The variance of NMI:", get_variance(metrics[0]))
+	print("The variance of ARI:", get_variance(metrics[1]))
+	print("The variance of Homogeneity:", get_variance(metrics[2]))
 	plt.savefig(method_name+'.png')
-	plt.show()
 	plt.close()
 
 def heuristic_based_init(k, full_data):

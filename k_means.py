@@ -107,6 +107,20 @@ def get_pred_for_cluster(cluster: list):
 		return 0
 	return 1
 
+def get_variance_of_cluster(cluster: list):
+	center = get_center(cluster)
+	var_clust = 0
+	for data in cluster:
+		ps_dis = get_dist(center, data)
+		var_clust += (ps_dis ** 2)
+	return var_clust
+
+def get_total_variance(clusters: list):
+	tot_var = 0
+	for cluster in clusters:
+		tot_var += get_variance_of_cluster(cluster)
+	return tot_var
+
 def get_predictions_for_clusters(clusters: list):
 	y_pred = []
 	for cluster in clusters:

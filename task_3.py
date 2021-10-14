@@ -15,7 +15,7 @@ def wang_cross_validation(k, c, full_data: list):
 	for _ in range(c):
 		ps_data = full_data.copy()
 		random.shuffle(ps_data)
-		m = int((3/8)*len(full_data))
+		m = int((2/5)*len(full_data))
 		s1 = ps_data[:m]
 		s2 = ps_data[m:2*m]
 		s3 = ps_data[2*m:]
@@ -35,7 +35,7 @@ def plot_metric(x, y, name):
 	print("generated",name+".png")
 	plt.close()
 
-for k in range(2, 100):
+for k in range(2, 70):
 	print("K =",k,"done")
 	init_centers = k_means.random_centers(k, list_of_data)
 	clusters = k_means.k_means(init_centers, list_of_data)

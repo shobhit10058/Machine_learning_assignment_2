@@ -129,11 +129,13 @@ def get_predictions_for_clusters(clusters: list):
 		y_pred.extend([pred for _ in range(ps_siz)])
 	return y_pred
 
-def get_predictions_for_test(test_data: list, clusters: list):
+def get_clusters_and_preds_for_test(test_data: list, clusters: list)->tuple:
 	y_pred = []
 	centers = get_centers(clusters)
 	predictions_for_clusters = [get_pred_for_cluster(clusters[i]) for i in range(len(clusters))]
+	clusters_test_ind = []
 	for data in test_data:
 		clust_ind = closest_centre(centers, data)
 		y_pred.append(predictions_for_clusters[clust_ind])
-	return y_pred
+		clusters_test_ind.append(clust_ind)
+	return (clusters_test_ind, y_pred)

@@ -45,7 +45,7 @@ def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 				train_data.append(list_of_data[i])
 
 		clusters = k_means.k_means(init_centers, train_data)
-		y_pred = k_means.get_predictions_for_test(test_data, clusters)
+		clust_test_ind, y_pred = k_means.get_clusters_and_preds_for_test(test_data, clusters)
 		y_label = [test_data[i][-1] for i in range(test_size)]
 
 		NMI_sc += metrics.normalized_mutual_info_score(y_label, y_pred)
@@ -71,7 +71,7 @@ def evaluate_init(k: int, full_data: list, method, method_name)->None:
 
 	for i in range(3):
 		ax.plot(metrics[i], color=colors[i])
-	print("\nWith", method + ", the variance of metrics were:")
+	print("\nWith", method_name + ", the variance of metrics were:")
 	print("The variance of NMI:", get_variance(metrics[0]))
 	print("The variance of ARI:", get_variance(metrics[1]))
 	print("The variance of Homogeneity:", get_variance(metrics[2]))

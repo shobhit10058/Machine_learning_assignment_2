@@ -48,9 +48,8 @@ def get_curr_cluster(centers: list, list_of_data: list)->list:
 		clusters[closest_centre(centers, curr_data)].append(curr_data)
 	return clusters
 
-def get_center(cluster: list)->list:
+def get_center(cluster: list):
 	size_of_cluster = len(cluster)
-	assert(size_of_cluster > 0) 	
 	dim = (len(cluster[0]) - 1)
 	center = [0 for _ in range(dim)]
 	for curr_data in cluster:
@@ -61,30 +60,60 @@ def get_center(cluster: list)->list:
 		center[attr_ind] /= size_of_cluster
 	return center
 
-def get_centers(clusters: list)->list:
+def get_centers(clusters: list):
 	centers = []
 	for cluster in clusters:
+		if len(cluster) == 0:
+			return False
 		centers.append(get_center(cluster))
 	return centers
 
-def random_centers(k, list_of_data):
-	init_centers = random.sample(list_of_data, k)
-	for ind in range(k):
-		init_centers[ind] = list(init_centers[ind])
-		init_centers[ind].pop()
-	return init_centers
+def heuristic_based_init(k, full_data):
+	indices = [i for i in range(len(full_data))]
+	c0 = random.choice(indices)
+	centers = {c0}
+
+	for centr_id in range(k - 1):
+		max_dist = 0
+		ps_center = -1
+		for data_id in range(len(full_data)):
+			if data_id in centers:
+				continue
+			min_dis = k_means.get_dist(full_data[c0][:-1], full_data[data_id][:-1])
+			for prev_id in centers:
+				min_dis = min(min_dis, k_means.get_dist(full_data[prev_id][:-1], full_data[data_id][:-1]))
+			if min_dis >= max_dist:
+				max_dist = min_dis
+				ps_center = data_id
+		centers.add(ps_center)
+	return centers
+
+def random_center_init(k, full_data):		
+	indices = [i for i in range(len(full_data))]
+	chosen_centers = set(random.sample(indices, k))
+	return chosen_centers
 
 # give the optional value of tolerance if 
 # convergence is taking too much time, by
 # default it is zero
-def k_means(init_centers: list, list_of_data: list, tol = 0, get_stats=0)->list:
-	k = len(init_centers)
-	centers = [centre for centre in init_centers]
+def k_means(k, init_func, list_of_data: list, tol = 0, get_stats=0)->list:
+	size_data = len(list_of_data)
+	assert(k <= size_data)
+	center_ind = init_func(k, list_of_data)
+	centers = [list_of_data[ind] for ind in center_ind]
 	it = 0
 	while True:
 		it += 1
 		clusters = get_curr_cluster(centers, list_of_data)
-		new_centers = get_centers(clusters)		
+		if True in [len(cluster) == 0 for cluster in clusters]:
+			center_ind = init_func(k, list_of_data)
+			centers = [list_of_data[ind] for ind in center_ind]
+			if get_stats:
+				print("empty cluster came, restarting with different initialization")
+			it = 0
+			continue
+		else:
+			new_centers = get_centers(clusters)		
 		mx_dist = 0
 		for ind in range(len(centers)):
 			mx_dist = max(mx_dist, get_dist(new_centers[ind], centers[ind]))

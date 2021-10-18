@@ -29,7 +29,7 @@ def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 			indices.append(i)
 
 	# metrics
-	NMI_sc, ARI_sc, Hom_sc = 0, 0, 0
+	NMI_sc, ARI_sc, Hom_sc, acc_sc = 0, 0, 0, 0
 
 	size = len(list_of_data)
 	test_size = int(0.2*(size - k))
@@ -51,60 +51,38 @@ def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 		NMI_sc += metrics.normalized_mutual_info_score(y_label, y_pred)
 		ARI_sc += metrics.adjusted_rand_score(y_label, y_pred)
 		Hom_sc += metrics.homogeneity_score(y_label, y_pred)
+		acc_sc += metrics.accuracy_score(y_label, y_pred)
 
 	NMI_sc /= 50
 	ARI_sc /= 50
 	Hom_sc /= 50
+	acc_sc /= 50
 
-	return [NMI_sc, ARI_sc,Hom_sc]
+	return [NMI_sc, ARI_sc, Hom_sc, acc_sc]
 
 def evaluate_init(k: int, full_data: list, method, method_name)->None:
 	metrics = [[],[],[]]
 	for _ in range(50):
 		ps_metrics = evaluate_k_means_with_k_centers(full_data, method(k, full_data))
-		for i in range(3):
+		for i in range(4):
 			metrics[i].append(ps_metrics[i])
 	
 	import matplotlib.pyplot as plt
 	figure, ax = plt.subplots()
-	colors = ['blue', 'red', 'green']
+	colors = ['blue', 'red', 'green', 'yellow']
 
-	for i in range(3):
+	for i in range(4):
 		ax.plot(metrics[i], color=colors[i])
 	print("\nWith", method_name + ", the variance of metrics were:")
 	print("The variance of NMI:", get_variance(metrics[0]))
 	print("The variance of ARI:", get_variance(metrics[1]))
 	print("The variance of Homogeneity:", get_variance(metrics[2]))
+	print("The variance of Accuracy:", get_variance(metrics[3]))
 	plt.savefig(method_name+'.png')
 	plt.close()
 
-def heuristic_based_init(k, full_data):
-	indices = [i for i in range(len(full_data))]
-	c0 = random.choice(indices)
-	centers = {c0}
-
-	for centr_id in range(k - 1):
-		max_dist = 0
-		ps_center = -1
-		for data_id in range(len(full_data)):
-			if data_id in centers:
-				continue
-			min_dis = k_means.get_dist(full_data[c0][:-1], full_data[data_id][:-1])
-			for prev_id in centers:
-				min_dis = min(min_dis, k_means.get_dist(full_data[prev_id][:-1], full_data[data_id][:-1]))
-			if min_dis >= max_dist:
-				max_dist = min_dis
-				ps_center = data_id
-		centers.add(ps_center)
-	return centers
-
-def random_center_init(k, full_data):		
-	indices = [i for i in range(len(full_data))]
-	chosen_centers = set(random.sample(indices, k))
-	return chosen_centers
-
-evaluate_init(k, list_of_data, random_center_init, "random_center_init")
-evaluate_init(k, list_of_data, heuristic_based_init, "heuritics_based_init")
+evaluate_init(k, list_of_data, k_means.random_center_init, "random_center_init")
+evaluate_init(k, list_of_data, k_means.heuristic_based_init, "heuritics_based_init")
 
 
 

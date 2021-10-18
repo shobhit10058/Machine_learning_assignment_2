@@ -79,9 +79,9 @@ def heuristic_based_init(k, full_data):
 		for data_id in range(len(full_data)):
 			if data_id in centers:
 				continue
-			min_dis = k_means.get_dist(full_data[c0][:-1], full_data[data_id][:-1])
+			min_dis = get_dist(full_data[c0][:-1], full_data[data_id][:-1])
 			for prev_id in centers:
-				min_dis = min(min_dis, k_means.get_dist(full_data[prev_id][:-1], full_data[data_id][:-1]))
+				min_dis = min(min_dis, get_dist(full_data[prev_id][:-1], full_data[data_id][:-1]))
 			if min_dis >= max_dist:
 				max_dist = min_dis
 				ps_center = data_id

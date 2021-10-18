@@ -18,8 +18,9 @@ def get_variance(data: list):
 	var_data = mean_data2 - mean_data**2
 	return var_data
 
-def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
+def evaluate_k_means_with_k_centers(full_data, init_method)->dict:
 	indices = []
+	centers_ind = init_method(k, full_data)
 	init_centers = []
 
 	for i in range(len(full_data)):
@@ -44,7 +45,7 @@ def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 			else:
 				train_data.append(list_of_data[i])
 
-		clusters = k_means.k_means(init_centers, train_data)
+		clusters = k_means.k_means(k, init_method, train_data)
 		clust_test_ind, y_pred = k_means.get_clusters_and_preds_for_test(test_data, clusters)
 		y_label = [test_data[i][-1] for i in range(test_size)]
 
@@ -61,9 +62,9 @@ def evaluate_k_means_with_k_centers(full_data, centers_ind: set)->dict:
 	return [NMI_sc, ARI_sc, Hom_sc, acc_sc]
 
 def evaluate_init(k: int, full_data: list, method, method_name)->None:
-	metrics = [[],[],[]]
+	metrics = [[],[],[],[]]
 	for _ in range(50):
-		ps_metrics = evaluate_k_means_with_k_centers(full_data, method(k, full_data))
+		ps_metrics = evaluate_k_means_with_k_centers(full_data, method)
 		for i in range(4):
 			metrics[i].append(ps_metrics[i])
 	

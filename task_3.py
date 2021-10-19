@@ -32,6 +32,8 @@ def wang_cross_validation(k, c, full_data: list):
 
 def plot_metric(x, y, name):
 	plt.plot(x, y)
+	plt.grid(True)
+	plt.minorticks_on()
 	plt.savefig(name+".png")
 	print("generated",name+".png")
 	plt.close()

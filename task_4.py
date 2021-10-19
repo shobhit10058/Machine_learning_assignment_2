@@ -5,7 +5,7 @@ attributes, list_of_data = k_means.read_csv('mean_data.csv')
 k_means.normalize_data(list_of_data)
 
 # get the value from part iii)
-k = 50
+k = 8
 
 def get_variance(data: list):
 	mean_data = 0
@@ -59,26 +59,25 @@ def evaluate_k_means_with_k_centers(full_data, init_method)->dict:
 	Hom_sc /= 50
 	acc_sc /= 50
 
-	return [NMI_sc, ARI_sc, Hom_sc, acc_sc]
+	return [NMI_sc, ARI_sc, Hom_sc]
 
 def evaluate_init(k: int, full_data: list, method, method_name)->None:
-	metrics = [[],[],[],[]]
+	metrics = [[],[],[]]
 	for _ in range(50):
 		ps_metrics = evaluate_k_means_with_k_centers(full_data, method)
-		for i in range(4):
+		for i in range(3):
 			metrics[i].append(ps_metrics[i])
 	
 	import matplotlib.pyplot as plt
 	figure, ax = plt.subplots()
-	colors = ['blue', 'red', 'green', 'yellow']
+	colors = ['blue', 'red', 'green']
 
-	for i in range(4):
+	for i in range(3):
 		ax.plot(metrics[i], color=colors[i])
 	print("\nWith", method_name + ", the variance of metrics were:")
 	print("The variance of NMI:", get_variance(metrics[0]))
 	print("The variance of ARI:", get_variance(metrics[1]))
 	print("The variance of Homogeneity:", get_variance(metrics[2]))
-	print("The variance of Accuracy:", get_variance(metrics[3]))
 	plt.savefig(method_name+'.png')
 	plt.close()
 
